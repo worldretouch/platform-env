@@ -1,0 +1,24 @@
+# One-time bootstrap: kubectl apply -n argocd -f argocd/platform-argocd-config-app.yaml
+# After that, edits to project-platform-services.yaml in Git sync automatically.
+#
+# Uses project "default" so we do not depend on AppProject platform-services (which this app deploys).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-argocd-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/worldretouch/platform-env.git
+    targetRevision: main
+    path: argocd
+    directory:
+      include: project-platform-services.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

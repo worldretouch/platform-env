@@ -1,0 +1,27 @@
+service:
+  name: orders-api
+  port: 3000
+  replicas: 2
+
+image:
+  repository: ghcr.io/worldretouch
+  tag: "dev-sha-REPLACE_ME"
+  pullPolicy: IfNotPresent
+
+# Create a docker-registry secret named ghcr-pull in this namespace (e.g. kubectl create secret docker-registry ...).
+# Change the name below if your team uses a different secret name.
+imagePullSecrets:
+  - name: ghcr-pull
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+
+env:
+  APP_ENV: development
+  LOG_LEVEL: info
+
+existingSecret: ""
+
